@@ -77,7 +77,7 @@ ES.World.prototype.removeEntities = function()
 
     this.entities               = [];
     this.components             = [];
-    this.tags                   = [];
+    this.entitiesNames          = [];
     this.waitingRemoveUpdate    = [];
     this.waitingAddUpdate       = [];
     this.waitingEvents          = [];
@@ -93,6 +93,22 @@ ES.World.prototype.createEntity = function()
     this.entities[this.entities.length] = entity;
 
     return entity;
+};
+
+/**
+* Destroy the given entity.
+* @param {ES.Entity} An ES.Entity instance.
+*/
+ES.World.prototype.destroyEntity = function( entity )
+{
+    // Removes components.
+    this.components[entity.id]          = [];
+    this.waitingRemoveUpdate[entity.id] = entity;
+
+    // Set the name as free.
+    for( var i in this.entitiesNames )
+        if( this.entitiesNames[i] == entity )
+            this.entitiesNames[i] = null;
 };
 
 /**
