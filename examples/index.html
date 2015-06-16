@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Entity System - Test</title>
+        <meta name="Keywords" content="Kafkaf!">
+        <meta charset="utf-8">
+    </head>
+    <body>
+
+        <div id="application"></div>
+
+
+        <script>
+
+            // Demo's namespace.
+            var DEMO = DEMO || {};
+
+        </script>
+
+        <!-- Core -->
+        <script src="../src/index.js"></script>
+        <script src="../src/Utils.js"></script>
+        <script src="../src/Component.js"></script>
+        <script src="../src/Entity.js"></script>
+        <script src="../src/Event.js"></script>
+        <script src="../src/EntityEvent.js"></script>
+        <script src="../src/System.js"></script>
+        <script src="../src/World.js"></script>
+
+        <!-- Tests -->
+        <script src="./Events/DeadEvent.js"></script>
+        <script src="./Components/HealthComponent.js"></script>
+        <script src="./Components/PositionComponent.js"></script>
+        <script src="./Components/SpriteComponent.js"></script>
+        <script src="./Components/VelocityComponent.js"></script>
+        <script src="./Systems/LifeSystem.js"></script>
+        <script src="./Systems/PhysicSystem.js"></script>
+        <script src="./Systems/GraphicSystem.js"></script>
+        <script src="./Systems/GameSystem.js"></script>
+
+        <script>
+
+            // Create a world.
+            var world = new ES.World();
+
+            // Add systems.
+            world.addSystem( new DEMO.GameSystem() );
+            world.addSystem( new DEMO.LifeSystem() );
+            world.addSystem( new DEMO.PhysicSystem() );
+            world.addSystem( new DEMO.GraphicSystem() );
+
+            // Create a first entity.
+            {
+                var entity = world.createEntity();
+                entity.addComponent( new DEMO.HealthComponent(100) );
+                entity.addComponent( new DEMO.PositionComponent( 2, 7 ) );
+                entity.addComponent( new DEMO.SpriteComponent("picture.png") );
+                entity.addComponent( new DEMO.VelocityComponent() );                   
+            }
+
+            // Create a second entity.
+            {
+                var entity = world.createEntity();
+                entity.addComponent( new DEMO.VelocityComponent() );
+                entity.addComponent( new DEMO.PositionComponent(-2, -3) );
+            }
+
+            // Update simulation.
+            world.update(0.0);
+
+        </script>
+
+    </body>
+</html>
