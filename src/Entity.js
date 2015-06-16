@@ -40,6 +40,15 @@ ES.Entity.prototype.removeComponent = function( component )
 };
 
 /**
+* Set name.
+* @param {String} name A String representing the name to assign.
+*/
+ES.Entity.prototype.setName = function( name )
+{
+    this.world.setEntityName(name, this);
+};
+
+/**
 * Get components.
 * @return {Array.<ES.Component>}.
 */

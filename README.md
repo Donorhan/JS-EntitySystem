@@ -8,10 +8,10 @@ Feel free to contribute :)
 
 An example is available in the folder "examples".
 
- ```javascript
+```javascript
  
- // Create a world.
- var world = new ES.World();
+// Create a world.
+var world = new ES.World();
 
 // Add systems.
 world.addSystem( new DEMO.GameSystem() );

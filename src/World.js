@@ -48,6 +48,13 @@ ES.World = function()
     * @private
     */
     this.systems = [];
+
+    /**
+    * Array with entities names.
+    * @type {Array.<String, {ES.Entity}>}
+    * @private
+    */
+    this.entitiesNames = [];
 }
 
 /**
@@ -70,6 +77,7 @@ ES.World.prototype.removeEntities = function()
 
     this.entities               = [];
     this.components             = [];
+    this.tags                   = [];
     this.waitingRemoveUpdate    = [];
     this.waitingAddUpdate       = [];
     this.waitingEvents          = [];
@@ -204,6 +212,19 @@ ES.World.prototype.sendEvent = function( event )
 };
 
 /**
+* Tag an entity with a name.
+*
+* If an entity with the same exist, the previous one will be unnamed.
+*
+* @param {String} name A String representing the name to assign.
+* @param {ES.Entity} entity An ES.Entity instance.
+*/
+ES.World.prototype.setEntityName = function( name, entity )
+{
+    this.entitiesNames[name] = entity;
+};
+
+/**
 * Get an entity's components.
 * @param {ES.Entity} entity An ES.Entity instance.
 * @return {Array} An array of ES.Component.
@@ -226,4 +247,14 @@ ES.World.prototype.getComponent = function( entity, componentUID )
         return components[componentUID.prototype.UID] || null;
 
     return null;
+};
+
+/**
+* Get entity with the given name.
+* @param {String} name A String representing the name to assign.
+* @return {ES.Entity|null} An ES.Entity instance or null.
+*/
+ES.World.prototype.getEntityWithName = function( name )
+{
+    return this.entitiesNames[name] || null;
 };
