@@ -1,4 +1,4 @@
-'use strict';
+goog.provide('ES.Component');
 
 /**
 * A Component.

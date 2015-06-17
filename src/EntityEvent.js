@@ -1,4 +1,6 @@
-'use strict';
+goog.provide('ES.EntityEvent');
+goog.require('ES.Event');
+goog.require('ES.Utils');
 
 /**
 * An EntityEvent.
@@ -6,11 +8,13 @@
 * @param {ES.Entity} entity An Entity instance.
 * @param {ES.EntityEvent.Type} type An ES.EntityEvent.Type instance.
 * @param {ES.Component} component A Component instance.
-* @augments ES.Event
+* @extends {ES.Event}
 * @constructor
 */
 ES.EntityEvent = function( entity, type, component )
 {
+    goog.base(this);
+
     /**
     * The target.
     * @type {ES.Entity}
@@ -27,11 +31,12 @@ ES.EntityEvent = function( entity, type, component )
     * Targted Component.
     * @type {ES.Component}
     */
-    this.component  = component;
+    this.component = component;
 }
-ES.Utils.extend(ES.Event, ES.EntityEvent);
+goog.inherits( ES.EntityEvent, ES.Event );
 
 /**
 * EntityEvent's types.
+* @enum {number}
 */
 ES.EntityEvent.Type = { AddComponent: 0, RemoveComponent: 1 };

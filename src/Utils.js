@@ -1,4 +1,4 @@
-'use strict';
+goog.provide('ES.Utils');
 
 /**
 * Utils functions.
@@ -14,8 +14,7 @@ ES.Utils.nextID = 0;
 */
 ES.Utils.extend = function( parent, child )
 {
-    child.prototype             = Object.create(parent.prototype);      // Inherit.
-    child.prototype.constructor = child;                                // Repair the inherited constructor.
-    child.prototype.UID         = 1 << ES.Utils.nextID;                 // Compute UID.
+	goog.inherits( child, parent );
+    child.prototype.UID = 1 << ES.Utils.nextID;
     ES.Utils.nextID++;
 };

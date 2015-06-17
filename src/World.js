@@ -1,4 +1,9 @@
-'use strict';
+goog.provide('ES');
+goog.provide('ES.World');
+goog.require('ES.Component');
+goog.require('ES.Entity');
+goog.require('ES.Event');
+goog.require('ES.System');
 
 /**
 * A World: Manage entities, systems and components.
@@ -12,7 +17,7 @@ ES.World = function()
     * - Key is the entity's id.
     * - Value is an Array of ES.Component with key = ES.Component UID.
     *
-    * @type {Array.<Number>}
+    * @type {Array.<number>}
     */
     this.components = [];
 
@@ -32,13 +37,13 @@ ES.World = function()
 
     /**
     * Array of entities waiting to be added to the systems.
-    * @type {Array.<Number>}
+    * @type {Array.<number>}
     */
     this.waitingAddUpdate = [];
 
     /**
     * Array of entities waiting to be added to the systems.
-    * @type {Array.<Number>}
+    * @type {Array.<number>}
     */
     this.waitingRemoveUpdate = [];
 
@@ -51,7 +56,7 @@ ES.World = function()
 
     /**
     * Array with entities names.
-    * @type {Array.<String, {ES.Entity}>}
+    * @type {Array.<string, {ES.Entity}>}
     * @private
     */
     this.entitiesNames = [];
@@ -97,7 +102,7 @@ ES.World.prototype.createEntity = function()
 
 /**
 * Destroy the given entity.
-* @param {ES.Entity} An ES.Entity instance.
+* @param {ES.Entity} entity An ES.Entity instance.
 */
 ES.World.prototype.destroyEntity = function( entity )
 {
@@ -123,7 +128,7 @@ ES.World.prototype.addSystem = function( system )
 
 /**
 * World's entry point.
-* @param {Number} deltaTime Time elapsed since the last update.
+* @param {number} deltaTime Time elapsed since the last update.
 */
 ES.World.prototype.update = function( deltaTime )
 {
@@ -141,8 +146,8 @@ ES.World.prototype.update = function( deltaTime )
         {
             case ES.EntityEvent.Type.AddComponent:
             {
-                components[event.component.UID]                 = event.component;
-                this.waitingAddUpdate[event.entity.id]          = event.entity;
+                // "AddComponent" event is processed directly.
+                this.waitingAddUpdate[event.entity.id] = event.entity;
                 break;
             }
             case ES.EntityEvent.Type.RemoveComponent:
@@ -220,7 +225,17 @@ ES.World.prototype.sendEvent = function( event )
 {
     // Process ES.EntityEvent here.
     if( event instanceof ES.EntityEvent )
+    {
+        // Add component directly to the entity.
+        if( event.type == ES.EntityEvent.Type.AddComponent )
+        {
+            var entityComponents = this.components[event.entity.id] || [];
+            entityComponents[event.component.UID] = event.component;
+            this.components[event.entity.id] = entityComponents;
+        }
+
         this.waitingEvents[this.waitingEvents.length] = event;
+    }
 
     // Send the event to the systems.
     for( var i = 0; i < this.systems.length; i++ )
@@ -232,7 +247,7 @@ ES.World.prototype.sendEvent = function( event )
 *
 * If an entity with the same exist, the previous one will be unnamed.
 *
-* @param {String} name A String representing the name to assign.
+* @param {string} name A string representing the name to assign.
 * @param {ES.Entity} entity An ES.Entity instance.
 */
 ES.World.prototype.setEntityName = function( name, entity )
@@ -266,8 +281,22 @@ ES.World.prototype.getComponent = function( entity, componentUID )
 };
 
 /**
+* Get a system.
+* @param {string} className The name of the class.
+* @return {ES.System|null} An ES.System instance or null.
+*/
+ES.World.prototype.getSystem = function( className )
+{
+    for( var i = 0; i < this.systems.length; i++ )
+        if( this.systems[i] instanceof className )
+            return this.systems[i];
+
+    return null;
+};
+
+/**
 * Get entity with the given name.
-* @param {String} name A String representing the name to assign.
+* @param {string} name A string representing the name to assign.
 * @return {ES.Entity|null} An ES.Entity instance or null.
 */
 ES.World.prototype.getEntityWithName = function( name )

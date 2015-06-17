@@ -1,15 +1,16 @@
-'use strict';
+goog.provide('ES.Entity');
 
 /**
 * An entity: A simple identifier with some shortcuts.
 * @constructor
+* @interface
 * @param {ES.World} world A ES.World instance.
 */
 ES.Entity = function( world )
 {
     /**
     * Unique ID.
-    * @type {Number}
+    * @type {number}
     */
     this.id = ES.Entity.prototype.nextID++;
 
@@ -41,7 +42,7 @@ ES.Entity.prototype.removeComponent = function( component )
 
 /**
 * Set name.
-* @param {String} name A String representing the name to assign.
+* @param {string} name A string representing the name to assign.
 */
 ES.Entity.prototype.setName = function( name )
 {

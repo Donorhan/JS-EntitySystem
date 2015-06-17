@@ -1,4 +1,4 @@
-'use strict';
+goog.provide('ES.System');
 
 /**
 * A System.
@@ -6,6 +6,7 @@
 * Contains a list of entities to work with.
 *
 * @param {Array.<Object>=} requires An Array of ES.Component prototype.
+* @interface
 * @constructor
 */
 ES.System = function( requires )
@@ -85,7 +86,7 @@ ES.System.prototype.setActif = function( value )
 
 /**
 * System's entry point.
-* @param {Number} deltaTime Time elasped since the last update.
+* @param {number} deltaTime Time elasped since the last update.
 */
 ES.System.prototype.update = function( deltaTime ) { };
 
