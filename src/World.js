@@ -17,7 +17,7 @@ ES.World = function()
     * - Key is the entity's id.
     * - Value is an Array of ES.Component with key = ES.Component UID.
     *
-    * @type {Array.<number>}
+    * @type {Array.<Array.<ES.Component>>}
     */
     this.components = [];
 
@@ -37,13 +37,13 @@ ES.World = function()
 
     /**
     * Array of entities waiting to be added to the systems.
-    * @type {Array.<number>}
+    * @type {Array.<ES.Entity>}
     */
     this.waitingAddUpdate = [];
 
     /**
     * Array of entities waiting to be added to the systems.
-    * @type {Array.<number>}
+    * @type {Array.<Object>}
     */
     this.waitingRemoveUpdate = [];
 
@@ -56,7 +56,7 @@ ES.World = function()
 
     /**
     * Array with entities names.
-    * @type {Array.<string, {ES.Entity}>}
+    * @type {Array.<ES.Entity>}
     * @private
     */
     this.entitiesNames = [];
@@ -69,6 +69,10 @@ ES.World = function()
 ES.World.prototype.clear = function()
 {
     this.removeEntities();
+
+    for( var i = 0; i < this.systems.length; i++ )
+        this.systems[i].onInactivation();
+
     this.systems = [];
 };
 
@@ -78,7 +82,14 @@ ES.World.prototype.clear = function()
 ES.World.prototype.removeEntities = function()
 {
     for( var i = 0; i < this.systems.length; i++ )
+    {
+        this.systems[i].onClear();
+
+        for( var j = 0; j < this.systems[i].entities.length; j++ )
+            this.systems[i].removeEntity(this.systems[i].entities[j]);
+
         this.systems[i].entities = [];
+    }
 
     this.entities               = [];
     this.components             = [];
@@ -107,8 +118,7 @@ ES.World.prototype.createEntity = function()
 ES.World.prototype.destroyEntity = function( entity )
 {
     // Removes components.
-    this.components[entity.id]          = [];
-    this.waitingRemoveUpdate[entity.id] = entity;
+    this.waitingRemoveUpdate[this.waitingRemoveUpdate.length] = { entity: entity, components : [] }; // Empty array = Remove all components.
 
     // Set the name as free.
     for( var i in this.entitiesNames )
@@ -123,6 +133,7 @@ ES.World.prototype.destroyEntity = function( entity )
 ES.World.prototype.addSystem = function( system )
 {
     system.world = this;
+    system.onActivation();
     this.systems[this.systems.length] = system;
 };
 
@@ -154,9 +165,12 @@ ES.World.prototype.update = function( deltaTime )
             {
                 if( components[event.component.UID] )
                 {
-                    delete components[event.component.UID];
-                    components[event.component.UID]             = null;
-                    this.waitingRemoveUpdate[event.entity.id]   = event.entity;
+                    // "RemoveComponent" event is processed later to avoid bugs.
+                    this.waitingRemoveUpdate[this.waitingRemoveUpdate.length] = this.waitingRemoveUpdate[event.entity.id] || { entity: event.entity, components : [] };
+
+                    // Add component ID to the list of components to remove.
+                    var comp = this.waitingRemoveUpdate[event.entity.id].components;
+                    this.waitingRemoveUpdate[event.entity.id].components[comp.length] = event.component.UID;
                 }
 
                 break;
@@ -165,6 +179,7 @@ ES.World.prototype.update = function( deltaTime )
 
         this.components[event.entity.id] = components;
     }
+    this.waitingEvents = [];
 
     /*
     * Register entities in Systems.
@@ -184,25 +199,53 @@ ES.World.prototype.update = function( deltaTime )
             if( this.systems[i].key != 0 && ((token & this.systems[i].key) == this.systems[i].key) )
                 this.systems[i].addEntity( this.waitingAddUpdate[entityID] );
     }
+    this.waitingAddUpdate = [];
 
     /*
     * Remove waiting entities from Systems.
     */
-    for( var entityID in this.waitingRemoveUpdate )
+    for( var i = 0; i < this.waitingRemoveUpdate.length; i++ )
     {
-        var components  = this.components[entityID];
-        var token       = 0;
+        var removeData = this.waitingRemoveUpdate[i];
 
-        // Update key.
-        for( var UID in components )
-            if( components[UID] )
-                token |= UID;
+        // Ask to remove everything.
+        if( removeData.components.length == 0 )
+        {
+            // Remove entity from systems.
+            for( var i = 0; i < this.systems.length; i++ )
+                if( this.systems[i].isPresent(removeData.entity) )
+                    this.systems[i].removeEntity(removeData.entity);
 
-        // Remove entity from systems.
-        for( var i = 0; i < this.systems.length; i++ )
-            if( this.systems[i].isPresent(this.waitingRemoveUpdate[entityID]) && (token & this.systems[i].key) != this.systems[i].key )
-                this.systems[i].removeEntity( this.waitingRemoveUpdate[entityID] );
+            // Remove components.
+            for( var i in this.components[removeData.entity.id] )
+                delete this.components[removeData.entity.id][i];
+
+            this.components[removeData.entity.id] = [];
+        }
+        else 
+        {
+            var components  = this.components[removeData.entity.id];
+            var token       = 0;
+
+            // Update key.
+            for( var UID in components )
+                if( components[UID] )
+                    token |= UID;
+
+            // Remove entity from systems.
+            for( var i = 0; i < this.systems.length; i++ )
+                if( this.systems[i].isPresent(removeData.entity) && (token & this.systems[i].key) != this.systems[i].key )
+                    this.systems[i].removeEntity(removeData.entity);
+
+            // Remove components.
+            for( var i in removeData.components )
+            {
+                delete components[i];
+                components[i] = null;
+            }
+        }
     }
+    this.waitingRemoveUpdate = [];
 
     /*
     * Update Systems.
@@ -210,11 +253,6 @@ ES.World.prototype.update = function( deltaTime )
     for( var i = 0; i < this.systems.length; i++ )
         if( this.systems[i].enabled )
             this.systems[i].update(deltaTime);
-
-    // Clear arrays.
-    this.waitingEvents          = [];
-    this.waitingAddUpdate       = [];
-    this.waitingRemoveUpdate    = [];
 };
 
 /**
@@ -282,7 +320,7 @@ ES.World.prototype.getComponent = function( entity, componentUID )
 
 /**
 * Get a system.
-* @param {string} className The name of the class.
+* @param {Function} className The name of the class.
 * @return {ES.System|null} An ES.System instance or null.
 */
 ES.World.prototype.getSystem = function( className )

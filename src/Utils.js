@@ -9,8 +9,8 @@ ES.Utils.nextID = 0;
 
 /**
 * System's entry point.
-* @param {Object} parent Parent class to inherit from.
-* @param {Object} child Child: The target.
+* @param {Function} parent Parent class to inherit from.
+* @param {Function} child Child: The target.
 */
 ES.Utils.extend = function( parent, child )
 {

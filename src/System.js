@@ -5,8 +5,7 @@ goog.provide('ES.System');
 *
 * Contains a list of entities to work with.
 *
-* @param {Array.<Object>=} requires An Array of ES.Component prototype.
-* @interface
+* @param {Array.<ES.Component>=} requires An Array of ES.Component prototype.
 * @constructor
 */
 ES.System = function( requires )
@@ -25,7 +24,7 @@ ES.System = function( requires )
 
     /**
     * Computed key: using a bitwise operation with ES.Component's UID. 
-    * @type {boolean}
+    * @type {number}
     */
     this.key = 0;
 
@@ -111,6 +110,11 @@ ES.System.prototype.onEntityAdded = function( entity ) { };
 * @param {ES.Entity} entity An ES.Entity instance.
 */
 ES.System.prototype.onEntityRemoved = function( entity ) { };
+
+/**
+* Call when the system is clear.
+*/
+ES.System.prototype.onClear = function() { };
 
 /**
 * Call when an event is send.

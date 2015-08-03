@@ -3,7 +3,6 @@ goog.provide('ES.Entity');
 /**
 * An entity: A simple identifier with some shortcuts.
 * @constructor
-* @interface
 * @param {ES.World} world A ES.World instance.
 */
 ES.Entity = function( world )
@@ -60,7 +59,7 @@ ES.Entity.prototype.getComponents = function()
 
 /**
 * Get a component.
-* @param {Object} component An ES.Component prototype.
+* @param {ES.Component} component A component prototype.
 * @return {ES.Component|null}.
 */
 ES.Entity.prototype.getComponent = function( component )
