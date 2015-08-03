@@ -1,4 +1,5 @@
 goog.provide('ES.Entity');
+goog.require('ES.EntityEvent');
 
 /**
 * An entity: A simple identifier with some shortcuts.

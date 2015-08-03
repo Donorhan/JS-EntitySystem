@@ -1,4 +1,3 @@
-goog.provide('ES');
 goog.provide('ES.World');
 goog.require('ES.Component');
 goog.require('ES.Entity');
