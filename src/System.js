@@ -46,7 +46,7 @@ ES.System = function( requires )
 */
 ES.System.prototype.addEntity = function( entity )
 {
-    this.entities[this.entities.length] = entity;
+    this.entities.push(entity);
     this.onEntityAdded(entity);
 };
 

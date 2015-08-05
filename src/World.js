@@ -72,7 +72,7 @@ ES.World.prototype.clear = function()
     for( var i = 0; i < this.systems.length; i++ )
         this.systems[i].onInactivation();
 
-    this.systems = [];
+    this.systems.length = 0;
 };
 
 /**
@@ -87,15 +87,15 @@ ES.World.prototype.removeEntities = function()
         for( var j = 0; j < this.systems[i].entities.length; j++ )
             this.systems[i].removeEntity(this.systems[i].entities[j]);
 
-        this.systems[i].entities = [];
+        this.systems[i].entities.length = 0;
     }
 
-    this.entities               = [];
-    this.components             = [];
-    this.entitiesNames          = [];
-    this.waitingRemoveUpdate    = [];
-    this.waitingAddUpdate       = [];
-    this.waitingEvents          = [];
+    this.entities.length                = 0;
+    this.components.length              = 0;
+    this.entitiesNames.length           = 0;
+    this.waitingRemoveUpdate.length     = 0;
+    this.waitingAddUpdate.length        = 0;
+    this.waitingEvents.length           = 0;
 };
 
 /**
@@ -105,7 +105,7 @@ ES.World.prototype.removeEntities = function()
 ES.World.prototype.createEntity = function()
 {
     var entity = new ES.Entity(this);
-    this.entities[this.entities.length] = entity;
+    this.entities.push(entity);
 
     return entity;
 };
@@ -117,7 +117,7 @@ ES.World.prototype.createEntity = function()
 ES.World.prototype.destroyEntity = function( entity )
 {
     // Removes components.
-    this.waitingRemoveUpdate[this.waitingRemoveUpdate.length] = { entity: entity, components : [] }; // Empty array = Remove all components.
+    this.waitingRemoveUpdate.push({ entity: entity, components : [] }); // Empty array = Remove all components.
 
     // Set the name as free.
     for( var i in this.entitiesNames )
@@ -133,7 +133,7 @@ ES.World.prototype.addSystem = function( system )
 {
     system.world = this;
     system.onActivation();
-    this.systems[this.systems.length] = system;
+    this.systems.push(system);
 };
 
 /**
@@ -168,8 +168,7 @@ ES.World.prototype.update = function( deltaTime )
                     this.waitingRemoveUpdate[this.waitingRemoveUpdate.length] = this.waitingRemoveUpdate[event.entity.id] || { entity: event.entity, components : [] };
 
                     // Add component ID to the list of components to remove.
-                    var comp = this.waitingRemoveUpdate[event.entity.id].components;
-                    this.waitingRemoveUpdate[event.entity.id].components[comp.length] = event.component.UID;
+                    this.waitingRemoveUpdate[event.entity.id].components.push(event.component.UID);
                 }
 
                 break;
@@ -198,7 +197,7 @@ ES.World.prototype.update = function( deltaTime )
             if( this.systems[i].key != 0 && ((token & this.systems[i].key) == this.systems[i].key) )
                 this.systems[i].addEntity( this.waitingAddUpdate[entityID] );
     }
-    this.waitingAddUpdate = [];
+    this.waitingAddUpdate.length = 0;
 
     /*
     * Remove waiting entities from Systems.
@@ -219,7 +218,7 @@ ES.World.prototype.update = function( deltaTime )
             for( var i in this.components[removeData.entity.id] )
                 delete this.components[removeData.entity.id][i];
 
-            this.components[removeData.entity.id] = [];
+            this.components[removeData.entity.id].length = 0;
         }
         else 
         {
@@ -244,7 +243,7 @@ ES.World.prototype.update = function( deltaTime )
             }
         }
     }
-    this.waitingRemoveUpdate = [];
+    this.waitingRemoveUpdate.length = 0;
 
     /*
     * Update Systems.
