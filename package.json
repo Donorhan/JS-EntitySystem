@@ -1,0 +1,33 @@
+{
+  "name": "JS-EntitySystem",
+  "description": "",
+  "version": "0.0.1",
+  "author": "Donovan Orhan <dono.orhan@gmail.com>",
+  "main": "src/World.js",
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DonoSybrix/JS-EntitySystem"
+  },
+  "scripts": {
+    "build": "webpack --mode=build",
+    "dev": "webpack --progress --colors --watch --mode=dev"
+  },
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "babel": "6.*.*",
+    "babel-core": "6.*.*",
+    "babel-loader": "6.*.*",
+    "babel-preset-es2015": "6.*.*",
+    "webpack": "1.13.*",
+    "yargs": "4.7.*"
+  },
+  "keywords": [
+    "entitysystem",
+    "game",
+    "es6"
+  ],
+  "license": "MIT"
+}

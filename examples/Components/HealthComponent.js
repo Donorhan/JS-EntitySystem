@@ -1,8 +1,10 @@
-'use strict';
+import {Component} from '../../src/Component.js'
 
-DEMO.HealthComponent = function( health )
+export class HealthComponent extends Component
 {
-    ES.Component.call(this);
-    this.health = health;
+    constructor(health)
+    {
+        super();
+        this.health = health;
+    }
 }
-ES.Utils.extend(ES.Component, DEMO.HealthComponent);

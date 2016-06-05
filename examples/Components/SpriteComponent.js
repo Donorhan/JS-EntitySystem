@@ -1,8 +1,11 @@
-'use strict';
+import {Component} from '../../src/Component.js'
 
-DEMO.SpriteComponent = function( image )
+export class SpriteComponent extends Component
 {
-    ES.Component.call(this);
-    this.image = image;
+    constructor(image)
+    {
+        super();
+
+        this.image = image;
+    }
 }
-ES.Utils.extend(ES.Component, DEMO.SpriteComponent);

@@ -1,7 +1,9 @@
-'use strict';
+import {Component} from '../../src/Component.js'
 
-DEMO.VelocityComponent = function()
+export class VelocityComponent extends Component
 {
-    ES.Component.call(this);    
+    constructor()
+    {
+        super();
+    }
 }
-ES.Utils.extend(ES.Component, DEMO.VelocityComponent);

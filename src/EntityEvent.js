@@ -1,42 +1,49 @@
-goog.provide('ES.EntityEvent');
-goog.require('ES.Event');
-goog.require('ES.Utils');
+import {ESEvent} from './ESEvent.js'
 
 /**
-* An EntityEvent.
-*
-* @param {ES.Entity} entity An Entity instance.
-* @param {ES.EntityEvent.Type} type An ES.EntityEvent.Type instance.
-* @param {ES.Component} component A Component instance.
-* @extends {ES.Event}
-* @constructor
-*/
-ES.EntityEvent = function( entity, type, component )
+ * An EntityEvent
+ *
+ * @author Donovan ORHAN <dono.orhan@gmail.com>
+ */
+export class EntityEvent extends ESEvent
 {
-    goog.base(this);
-
     /**
-    * The target.
-    * @type {ES.Entity}
-    */
-    this.entity = entity;
+     * Constructor
+     *
+     * @param {Entity} entity An Entity instance
+     * @param {EntityEvent.Type} type An EntityEvent.Type instance
+     * @param {Component} component A Component instance
+     */
+    constructor(entity, type, component)
+    {
+        super();
 
-    /**
-    * Entity's event type.
-    * @type {ES.EntityEvent.Type}
-    */
-    this.type = type;
+        /**
+         * The target
+         *
+         * @type {Entity}
+         */
+        this.entity = entity;
 
-    /**
-    * Targted Component.
-    * @type {ES.Component}
-    */
-    this.component = component;
+        /**
+         * Entity's event type
+         *
+         * @type {EntityEvent.Type}
+         */
+        this.type = type;
+
+        /**
+         * Targted Component
+         *
+         * @type {Component}
+         */
+        this.component = component;
+    }
 }
-goog.inherits( ES.EntityEvent, ES.Event );
 
 /**
-* EntityEvent's types.
-* @enum {number}
-*/
-ES.EntityEvent.Type = { AddComponent: 0, RemoveComponent: 1 };
+ * Used to identify next identifier available
+ *
+ * @type {number}
+ */
+EntityEvent.Type = {AddComponent: 0, RemoveComponent: 1};

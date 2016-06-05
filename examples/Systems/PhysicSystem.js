@@ -1,27 +1,31 @@
-'use strict';
+import {System} from '../../src/System.js'
+import {PositionComponent} from '../Components/PositionComponent.js'
+import {VelocityComponent} from '../Components/VelocityComponent.js'
 
-DEMO.PhysicSystem = function()
+export class PhysicSystem extends System
 {
-    ES.System.call(this, [DEMO.PositionComponent, DEMO.VelocityComponent]);
-    this.physicEngine = null;
+    constructor()
+    {
+        super([VelocityComponent, PositionComponent]);
+        this.physicEngine = null;
+    }
+
+    update(deltaTime)
+    {
+        // Manage physic simulation
+    }
+
+    onEntityAdded(entity)
+    {
+        if (!this.physicEngine)
+            return;
+
+        let body = this.physicEngine.createBody();
+
+        let position = entity.getComponent(PositionComponent);
+        body.setPosition(position.x, position.y);
+
+        let velocity = entity.getComponent(VelocityComponent);
+        body.setVelocity(velocity.x, velocity.y);
+    }
 }
-ES.Utils.extend(ES.System, DEMO.PhysicSystem);
-
-DEMO.PhysicSystem.prototype.update = function( deltaTime )
-{   	
-	// Manage physic simulation.
-};
-
-DEMO.PhysicSystem.prototype.onEntityAdded = function( entity )
-{
-	if( this.physicEngine )
-	{
-		var body = this.physicEngine.createBody();
-
-		var position = entity.getComponent(DEMO.PositionComponent);
-		body.setPosition(position.x, position.y);
-
-		var velocity = entity.getComponent(DEMO.VelocityComponent);
-		body.setVelocity(velocity.x, velocity.y);
-	}
-};

@@ -1,123 +1,142 @@
-goog.provide('ES.System');
+import {UUID} from './UUID.js'
 
 /**
-* A System.
-*
-* Contains a list of entities to work with.
-*
-* @param {Array.<ES.Component>=} requires An Array of ES.Component prototype.
-* @constructor
-*/
-ES.System = function( requires )
+ * A System : Contains a list of entities to work with
+ *
+ * @author Donovan ORHAN <dono.orhan@gmail.com>
+ */
+export class System
 {
     /**
-    * An array of ES.Entity instance.
-    * @type {Array.<ES.Entity>}
-    */
-    this.entities = [];
-
-    /**
-    * A boolean representing System's state. 
-    * @type {boolean}
-    */
-    this.enabled = true;
-
-    /**
-    * Computed key: using a bitwise operation with ES.Component's UID. 
-    * @type {number}
-    */
-    this.key = 0;
-
-    /**
-    * A reference to the parent world.
-    * @type {ES.World}
-    */
-    this.world = null;
-
-    // Compute key.
-    if( requires )
-        for( var i = 0; i < requires.length; i++ )
-            this.key = this.key | requires[i].prototype.UID;
-}
-
-/**
-* Call when an entity is added to the system.
-* @param {ES.Entity} entity An ES.Entity instance.
-*/
-ES.System.prototype.addEntity = function( entity )
-{
-    this.entities.push(entity);
-    this.onEntityAdded(entity);
-};
-
-/**
-* Call when an entity is removed from the system.
-* @param {ES.Entity} entity An ES.Entity instance.
-*/
-ES.System.prototype.removeEntity = function( entity )
-{
-    var index = this.entities.indexOf(entity);
-    if( index > -1 )
+     * Constructor
+     *
+     * @param {Array.<Component>=} requires An Array of Component
+     */
+    constructor(requires)
     {
-        this.entities.splice(index, 1);
-        this.onEntityRemoved(entity);
+        /**
+         * An array of Entity instance
+         *
+         * @type {Array.<Entity>}
+         */
+        this.entities = [];
+
+        /**
+         * A boolean representing System's state
+         *
+         * @type {boolean}
+         */
+        this.enabled = true;
+
+        /**
+         * Computed key: using a bitwise operation with Component's UID
+         *
+         * @type {number}
+         */
+        this.key = 0;
+
+        /**
+         * A reference to the parent world
+         *
+         * @type {World}
+         */
+        this.world = null;
+
+        // Compute key
+        if (requires)
+        {
+            for (let i = 0; i < requires.length; i++)
+                this.key = this.key | UUID.get(requires[i]);
+        }
     }
-};
 
-/**
-* Check if given entity is present is the system.
-* @param {ES.Entity} entity An ES.Entity instance.
-* @return {boolean} True if entity is present, otherwise false.
-*/
-ES.System.prototype.isPresent = function( entity )
-{
-    return (this.entities.indexOf(entity) > -1);
-};
+    /**
+     * Call when an entity is added to the system
+     *
+     * @param {Entity} entity An Entity instance
+     */
+    addEntity(entity)
+    {
+        this.entities.push(entity);
+        this.onEntityAdded(entity);
+    }
 
-/**
-* Enable/disable the system.
-* @param {boolean} value A boolean value.
-*/
-ES.System.prototype.setActif = function( value )
-{
-    this.enabled = value;
-};
+    /**
+     * Call when an entity is removed from the system
+     *
+     * @param {Entity} entity An Entity instance
+     */
+    removeEntity(entity)
+    {
+        let index = this.entities.indexOf(entity);
+        if (index > -1)
+        {
+            this.entities.splice(index, 1);
+            this.onEntityRemoved(entity);
+        }
+    }
 
-/**
-* System's entry point.
-* @param {number} deltaTime Time elasped since the last update.
-*/
-ES.System.prototype.update = function( deltaTime ) { };
+    /**
+     * Check if given entity is present is the system
+     *
+     * @param {Entity} entity An Entity instance
+     * @return {boolean} True if entity is present, otherwise false
+     */
+    isPresent(entity)
+    {
+        return (this.entities.indexOf(entity) > -1);
+    }
 
-/**
-* Call when system is activated.
-*/
-ES.System.prototype.onActivation = function() { };
+    /**
+     * Enable/disable the system
+     *
+     * @param {boolean} value A boolean value
+     */
+    setActif(value)
+    {
+        this.enabled = value;
+    }
 
-/**
-* Call when system is inactivated.
-*/
-ES.System.prototype.onInactivation = function() { };
+    /**
+     * System's entry point
+     *
+     * @param {number} deltaTime Time elasped since the last update
+     */
+    update(deltaTime) { };
 
-/**
-* Call when an entity is added to the system.
-* @param {ES.Entity} entity An ES.Entity instance.
-*/
-ES.System.prototype.onEntityAdded = function( entity ) { };
+    /**
+     * Call when system is activated
+     */
+    onActivation() { };
 
-/**
-* Call when an entity is removed from the system.
-* @param {ES.Entity} entity An ES.Entity instance.
-*/
-ES.System.prototype.onEntityRemoved = function( entity ) { };
+    /**
+     * Call when system is inactivated
+     */
+    onInactivation() { };
 
-/**
-* Call when the system is clear.
-*/
-ES.System.prototype.onClear = function() { };
+    /**
+     * Call when an entity is added to the system
+     *
+     * @param {Entity} entity An Entity instance
+     */
+    onEntityAdded(entity) { };
 
-/**
-* Call when an event is send.
-* @param {ES.Event} event An ES.Event instance.
-*/
-ES.System.prototype.onEvent = function( event ) { };
+    /**
+     * Call when an entity is removed from the system
+     *
+     * @param {Entity} entity An Entity instance.
+     */
+    onEntityRemoved(entity) { };
+
+    /**
+     * Call when the system is clear
+     */
+    onClear() { };
+
+    /**
+     * Call when an event is send
+     *
+     * @param {Event} event An Event instance
+     */
+    onEvent(event) { };
+}

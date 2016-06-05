@@ -1,12 +1,16 @@
-'use strict';
+import {System} from '../../src/System.js'
+import {PositionComponent} from '../Components/PositionComponent.js'
+import {SpriteComponent} from '../Components/SpriteComponent.js'
 
-DEMO.GraphicSystem = function()
+export class GraphicSystem extends System
 {
-    ES.System.call(this, [DEMO.SpriteComponent, DEMO.PositionComponent]);
+    constructor()
+    {
+        super([SpriteComponent, PositionComponent]);
+    }
+
+    update(deltaTime)
+    {
+        // Draw scene using SpriteComponent
+    }
 }
-ES.Utils.extend(ES.System, DEMO.GraphicSystem);
-
-DEMO.GraphicSystem.prototype.update = function( deltaTime )
-{
-	// Draw scene using DEMO.SpriteComponent
-};

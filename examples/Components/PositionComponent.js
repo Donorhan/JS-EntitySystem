@@ -1,13 +1,12 @@
-'use strict';
+import {Component} from '../../src/Component.js'
 
-/**
-* Add a position to the entities.
-* @constructor
-*/
-DEMO.PositionComponent = function( x, y )
+export class PositionComponent extends Component
 {
-    ES.Component.call(this);
-    this.x = x;
-    this.y = y;
+    constructor(x, y)
+    {
+        super();
+
+        this.x = x;
+        this.y = y;
+    }
 }
-ES.Utils.extend(ES.Component, DEMO.PositionComponent);

@@ -1,27 +1,25 @@
-'use strict';
+import {System} from '../../src/System.js'
+import {DeadEvent} from '../Events/DeadEvent.js'
 
-DEMO.GameSystem = function()
+export class GameSystem extends System
 {
-    ES.System.call(this);
-    this.continueGame = true;
+    constructor()
+    {
+        super();
+        this.continueGame = true;
+    }
+
+    update(deltaTime)
+    {
+        if (!this.continueGame)
+        {
+            // Draw end game pop-up, …
+        }
+    }
+
+    onEvent(event) 
+    {
+        if (event instanceof DeadEvent)
+            this.continueGame = false;
+    }
 }
-ES.Utils.extend(ES.System, DEMO.GameSystem);
-
-DEMO.GameSystem.prototype.update = function( deltaTime )
-{
-	// Manage simulation.
-	if( !this.continueGame )
-	{
-		// Draw end game pop-up, …
-	}
-};
-
-/**
-* Call when an event is received from the world.
-* @param {ES.Event} event An ES.Event instance.
-*/
-DEMO.GameSystem.prototype.onEvent = function( event ) 
-{
-	if( event instanceof DEMO.DeadEvent )
-		this.continueGame = false;
-};

@@ -1,17 +1,21 @@
-'use strict';
+import {System} from '../../src/System.js'
+import {DeadEvent} from '../Events/DeadEvent.js'
+import {HealthComponent} from '../Components/HealthComponent.js'
 
-DEMO.LifeSystem = function()
+export class LifeSystem extends System
 {
-    ES.System.call(this, [DEMO.HealthComponent]);
+    constructor()
+    {
+        super([HealthComponent]);
+    }
+
+    update(deltaTime)
+    {
+        for (let i = 0; i < this.entities.length; i++)
+        {
+            let healthComponent = this.entities[i].getComponent(HealthComponent);
+            if (healthComponent && healthComponent.health <= 200)
+                this.world.sendEvent(new DeadEvent(this.entities[i]));
+        }
+    }
 }
-ES.Utils.extend(ES.System, DEMO.LifeSystem);
-
-DEMO.LifeSystem.prototype.update = function( deltaTime )
-{
-	for( var i = 0; i < this.entities.length; i++ )
-	{
-		var healthComponent = this.entities[i].getComponent(DEMO.HealthComponent);
-		if( healthComponent && healthComponent.health <= 200 )
-			this.world.sendEvent( new DEMO.DeadEvent(this.entities[i]) );
-	}
-};
