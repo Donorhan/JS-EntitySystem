@@ -13,4 +13,9 @@ export class GraphicSystem extends System
     {
         // Draw scene using SpriteComponent
     }
+
+    onEntityAdded(entity)
+    {
+    	
+    }
 }

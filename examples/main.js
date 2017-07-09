@@ -37,8 +37,13 @@ class Main
             entity.addComponent(new PositionComponent(-2, -3));
         }
 
-        // Update simulation
-        world.update(0.0);
+
+        function update() {
+            requestAnimationFrame(update);
+            world.update(0.0);            
+        }
+
+        update();
     }
 }
 

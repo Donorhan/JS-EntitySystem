@@ -15,6 +15,13 @@ export class World
     constructor()
     {
         /**
+         * Function to call when an entity is created
+         *
+         * @type {Function}
+         */
+        this.callbackCreation = null;
+
+        /**
          * Array of Component
          *
          * - Key is the entity's id
@@ -101,12 +108,12 @@ export class World
             this.systems[i].entities.length = 0;
         }
 
-        this.entities.length                = 0;
-        this.components.length              = 0;
-        this.entitiesNames.length           = 0;
-        this.waitingRemoveUpdate.length     = 0;
-        this.waitingAddUpdate.length        = 0;
-        this.waitingEvents.length           = 0;
+        this.entities.length = 0;
+        this.components.length = 0;
+        this.entitiesNames.length = 0;
+        this.waitingRemoveUpdate.length = 0;
+        this.waitingAddUpdate.length = 0;
+        this.waitingEvents.length = 0;
     }
 
     /**
@@ -118,6 +125,10 @@ export class World
     {
         let entity = new Entity(this);
         this.entities.push(entity);
+
+        if (this.callbackCreation) {
+            this.callbackCreation(entity);
+        }
 
         return entity;
     }
@@ -162,8 +173,8 @@ export class World
          */
         for (let i = 0; i < this.waitingEvents.length; i++)
         {
-            let event       = this.waitingEvents[i];
-            let components  = this.components[event.entity.id] || [];
+            let event = this.waitingEvents[i];
+            let components = this.components[event.entity.id] || [];
 
             switch (event.type)
             {
@@ -179,7 +190,7 @@ export class World
                     if (components[uid])
                     {
                         // "RemoveComponent" event is processed later to avoid bugs
-                        this.waitingRemoveUpdate[event.entity.id] = this.waitingRemoveUpdate[event.entity.id] || { 'entity' : event.entity, 'components' : [] };
+                        this.waitingRemoveUpdate[event.entity.id] = this.waitingRemoveUpdate[event.entity.id] || { entity : event.entity, components : [] };
 
                         // Add component ID to the list of components to remove
                         this.waitingRemoveUpdate[event.entity.id].components.push(uid);
@@ -322,23 +333,23 @@ export class World
      * Get an entity's component
      *
      * @param {Entity} entity An Entity instance
-     * @param {Component} componentUID An Component prototype
-     * @return {Component|null} An Component instance or null
+     * @param {Component} componentUID A Component prototype
+     * @return {Component|null} A Component instance or null
      */
     getComponent(entity, componentUID)
     {
         let components = this.getComponents(entity);
-        if (components)
-            return components[componentUID.prototype.UID] || null;
+        if (!components)
+            return null;
 
-        return null;
+        return components[UUID.get(componentUID)] || null;
     }
 
     /**
     * Get a system
     *
     * @param {Function} className The name of the class
-    * @return {System|null} An System instance or null
+    * @return {System|null} A System instance or null
     */
     getSystem(className)
     {
@@ -358,5 +369,16 @@ export class World
     getEntityWithName(name)
     {
         return this.entitiesNames[name] || null;
+    }
+
+    /**
+     * Set callback
+     *
+     * @param {Function<Entity>}
+     * @private
+     */
+    onEntityCreated(callback)
+    {
+        this.callbackCreation = callback;
     }
 }
